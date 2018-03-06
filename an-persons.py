@@ -6,15 +6,13 @@ import re
 csv_input = "resources/Datathon-AN-10mars2018/persons.csv"
 csv_query = "resources/Datathon-AN-10mars2018/query.csv"
 
-pattern = re.compile("http:\/\/catalogue\.bnf\.fr\/ark:\/12148\/cb(?P<BNFid>\d{7,8}[0-9bcdfghjkmnpqrstvwxz])")
-
-bnfids = {}
+isni_ids = {}
 with open(csv_query, 'r') as csv_query_file:
     reader = csv.DictReader(csv_query_file, delimiter=',')
     for line in reader:
         print(line)
-        bnfid = line['bnf']
-        bnfids[bnfid] = {
+        isni_id = line['isni']
+        isni_ids[isni_id] = {
             'qid': line['human'].split('/')[-1],
             'name': line['humanLabel']
         }
@@ -23,12 +21,10 @@ with open(csv_query, 'r') as csv_query_file:
 with open(csv_input, 'r') as csv_input_file:
     reader = csv.DictReader(csv_input_file, delimiter='\t')
     for line in reader:
-        if line['BnFRecord']:
-            if 'http://catalogue.bnf.fr/ark:/12148/cb' in line['BnFRecord']:
-                m = re.search(pattern, line['BnFRecord'])
-                source_bnf_id = m.group('BNFid')
-                if source_bnf_id in bnfids:
-                    print('{}\tP3599\t"{}"'.format(
-                        bnfids[source_bnf_id]['qid'],
-                        line['recordId']
-                    ))
+        if line['isni']:
+            source_isni_id = line['isni'].strip()
+            if source_isni_id in isni_ids:
+                print('{}\tP3599\t"{}"'.format(
+                    isni_ids[source_isni_id]['qid'],
+                    line['recordId']
+                ))
