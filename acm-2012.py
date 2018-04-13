@@ -49,7 +49,6 @@ with open(output_file, 'w') as csv_output:
     writer = csv.DictWriter(csv_output,
                             fieldnames=fieldnames,
                             delimiter='\t')
-    writer.writeheader()
 
     for row in all_concepts:
         writer.writerow(row)
